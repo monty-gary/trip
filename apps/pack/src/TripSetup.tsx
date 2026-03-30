@@ -72,7 +72,7 @@ export function TripSetup({ onTripCreated }: TripSetupProps) {
               />
               <button type="submit">Continue</button>
             </form>
-            <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--line)' }}>
+            <div className="demo-load-section">
               <button type="button" className="ghost" onClick={handleLoadDemo}>
                 Load demo data
               </button>
@@ -105,37 +105,16 @@ export function TripSetup({ onTripCreated }: TripSetupProps) {
           </form>
 
           {people.length > 0 && (
-            <div style={{ marginTop: '1rem' }}>
+            <div className="people-section">
               <h3>People coming ({people.length})</h3>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginTop: '0.5rem' }}>
+              <div className="people-list">
                 {people.map(person => (
-                  <div
-                    key={person.id}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.5rem',
-                      padding: '0.5rem 0.75rem',
-                      background: 'rgba(255, 255, 255, 0.7)',
-                      border: '1px solid var(--line)',
-                      borderRadius: '14px',
-                      fontSize: '0.9rem'
-                    }}
-                  >
+                  <div key={person.id} className="person-tag">
                     {person.name}
                     <button
                       type="button"
                       onClick={() => handleRemovePerson(person.id)}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        color: 'var(--ink-soft)',
-                        cursor: 'pointer',
-                        padding: '0.25rem',
-                        width: 'auto',
-                        minWidth: 'auto',
-                        borderRadius: '50%'
-                      }}
+                      className="person-remove-btn"
                       title={`Remove ${person.name}`}
                     >
                       ×
@@ -147,7 +126,7 @@ export function TripSetup({ onTripCreated }: TripSetupProps) {
                 type="button"
                 onClick={handleFinishSetup}
                 disabled={people.length === 0}
-                style={{ marginTop: '1rem' }}
+                className="finish-setup-btn"
               >
                 Start planning ({people.length} {people.length === 1 ? 'person' : 'people'})
               </button>

@@ -50,7 +50,7 @@ export function ItemCard({
           <p className="category">{item.category}</p>
           <h3>{item.name}</h3>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <div className="item-actions">
           <span className={`chip chip-${status}`}>{status}</span>
           <button
             type="button"

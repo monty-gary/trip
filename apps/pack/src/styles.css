@@ -369,6 +369,90 @@ button.ghost {
   background: rgba(174, 90, 52, 0.08);
 }
 
+/* Demo load section */
+.demo-load-section {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+
+/* People section */
+.people-section {
+  margin-top: 1rem;
+}
+
+.people-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.person-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  font-size: 0.9rem;
+}
+
+.person-remove-btn {
+  background: none;
+  border: none;
+  color: var(--ink-soft);
+  cursor: pointer;
+  padding: 0.25rem;
+  width: auto;
+  min-width: auto;
+  border-radius: 50%;
+}
+
+.finish-setup-btn {
+  margin-top: 1rem;
+}
+
+/* Add person form */
+.add-person-form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.add-person-form button {
+  width: auto;
+  min-width: 80px;
+}
+
+.add-person-cancel-btn {
+  width: auto;
+  min-width: 60px;
+}
+
+/* Item card actions */
+.item-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Add person inline form */
+.add-person-form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.add-person-btn {
+  width: auto;
+  min-width: 80px;
+}
+
+.add-person-cancel {
+  width: auto;
+  min-width: 60px;
+}
+
 /* Touch target enforcement */
 button,
 select,

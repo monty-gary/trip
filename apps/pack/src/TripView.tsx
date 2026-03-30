@@ -36,20 +36,21 @@ export function TripView({ trip, onTripUpdate, onResetTrip }: TripViewProps) {
       .map(([name]) => name);
   }, [trip.items]);
 
-  const basicWarnings = useMemo(() => {
-    const names = new Set(trip.items.map((item) => item.name.trim().toLowerCase()));
+  const coverageWarnings = useMemo(() => {
     const warnings: string[] = [];
 
-    if (!names.has('toothpaste')) {
-      warnings.push('No toothpaste on the list.');
+    const unclaimed = trip.items.filter(
+      (item) => item.state !== 'maybe' && item.claimedBy.length === 0
+    );
+    if (unclaimed.length > 0) {
+      warnings.push(`${unclaimed.length} item${unclaimed.length === 1 ? '' : 's'} with no one claiming ${unclaimed.length === 1 ? 'it' : 'them'} yet.`);
     }
 
-    if (!Array.from(names).some((name) => name.includes('charger'))) {
-      warnings.push('No chargers listed yet.');
-    }
-
-    if (Array.from(names).filter((name) => name.includes('game') || name.includes('cards')).length > 1) {
-      warnings.push('This trip may be oversupplied with games.');
+    const underClaimed = trip.items.filter(
+      (item) => item.state !== 'maybe' && item.claimedBy.length > 0 && item.claimedBy.length < item.neededQuantity
+    );
+    if (underClaimed.length > 0) {
+      warnings.push(`${underClaimed.length} item${underClaimed.length === 1 ? '' : 's'} still need${underClaimed.length === 1 ? 's' : ''} more volunteers.`);
     }
 
     return warnings;
@@ -216,15 +217,15 @@ export function TripView({ trip, onTripUpdate, onResetTrip }: TripViewProps) {
                 Add person
               </button>
             ) : (
-              <form onSubmit={handleAddPerson} style={{ display: 'flex', gap: '0.5rem' }}>
+              <form onSubmit={handleAddPerson} className="add-person-form">
                 <input
                   placeholder="Person's name"
                   value={addPersonName}
                   onChange={(e) => setAddPersonName(e.target.value)}
                   autoFocus
                 />
-                <button type="submit" style={{ width: 'auto', minWidth: '80px' }}>Add</button>
-                <button type="button" className="ghost" onClick={() => { setShowAddPerson(false); setAddPersonName(''); }} style={{ width: 'auto', minWidth: '60px' }}>Cancel</button>
+                <button type="submit" className="add-person-btn">Add</button>
+                <button type="button" className="ghost add-person-cancel" onClick={() => { setShowAddPerson(false); setAddPersonName(''); }}>Cancel</button>
               </form>
             )}
           </div>
@@ -254,11 +255,11 @@ export function TripView({ trip, onTripUpdate, onResetTrip }: TripViewProps) {
         <article className="panel">
           <h2>Quick warnings</h2>
           <ul>
-            {duplicateWarnings.length === 0 && basicWarnings.length === 0 ? <li>List looks balanced so far.</li> : null}
+            {duplicateWarnings.length === 0 && coverageWarnings.length === 0 ? <li>List looks balanced so far.</li> : null}
             {duplicateWarnings.map((warning) => (
               <li key={warning}>Duplicate item name: {warning}</li>
             ))}
-            {basicWarnings.map((warning) => (
+            {coverageWarnings.map((warning) => (
               <li key={warning}>{warning}</li>
             ))}
           </ul>
