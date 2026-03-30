@@ -2,96 +2,56 @@
 
 Tiny event-scoped apps for trips, weekends, cabins, festivals, and other temporary friend-group logistics.
 
-This repository is now a working monorepo. It currently includes:
+**Live:** [monty-gary.github.io/trip](https://monty-gary.github.io/trip/)
 
-- `umbrella`: a simple launcher/status app for the whole project
-- `dosh`: migrated from the standalone sibling repo and adapted to run here
-- `pack`: an initial working MVP for "who brings what"
+## Apps
+
+### pack — group packing coordination
+Who brings what, what is still missing, and what is already covered. Dense list view with item detail drill-in, localStorage persistence, dynamic people with case-insensitive identity matching.
+
+**Status:** live on GitHub Pages
+
+### dosh — realtime shared expenses
+Password-gated expense rooms with WebSocket sync, weighted splits, derived balances, and settle-up suggestions.
+
+**Status:** live (hosted separately on Render)
+
+### poll — group decisions *(planned)*
+Fast one-tap group decisions for departure times, dinner, and low-stakes indecision.
+
+### jest — social trip tools *(planned)*
+A playful bucket for tools that don't deserve a full product.
 
 ## Structure
 
 ```text
 trip/
   apps/
-    umbrella/   # landing app for the umbrella project
+    umbrella/   — landing page
+    pack/       — Vite + React + TypeScript
     dosh/
-      backend/  # Node + WebSocket server
-      frontend/ # Vite + React + TypeScript client
-    pack/       # Vite + React + TypeScript MVP
+      backend/  — Node + WebSocket server
+      frontend/ — Vite + React + TypeScript
 ```
 
-## Workspace commands
-
-Install dependencies once from the repo root:
+## Development
 
 ```bash
 npm install
+npm run dev           # umbrella (localhost:5173)
+npm run dev:pack      # pack (localhost:5174)
+npm run dev:dosh:frontend  # dosh frontend (localhost:5175)
+npm run dev:dosh:backend   # dosh backend (localhost:3000)
+npm run build         # build everything
 ```
 
-Run the umbrella launcher:
+## Deployment
 
-```bash
-npm run dev
-```
+Pack deploys to GitHub Pages via GitHub Actions on push to main. Dosh backend runs on Render.
 
-Run individual apps:
+## Design principles
 
-```bash
-npm run dev:umbrella
-npm run dev:pack
-npm run dev:dosh:backend
-npm run dev:dosh:frontend
-```
-
-Build everything that currently has a build:
-
-```bash
-npm run build
-```
-
-## Ports
-
-- `umbrella`: `http://localhost:5173`
-- `pack`: `http://localhost:5174`
-- `dosh` frontend: `http://localhost:5175`
-- `dosh` backend: `http://localhost:3000`
-
-## Current apps
-
-### `umbrella`
-
-Small launcher app for the repo. It gives the project a concrete top-level surface instead of leaving the repo as a concept document.
-
-### `dosh`
-
-Realtime shared expense splitting.
-
-Current behavior preserved from the standalone repo:
-
-- password gate and admin mode
-- per-tab expense rooms
-- live WebSocket sync
-- weighted expense splits
-- derived balances and settle-up suggestions
-
-See [apps/dosh/README.md](/workspace/repos/trip/apps/dosh/README.md).
-
-### `pack`
-
-Initial MVP for group packing coordination.
-
-Current behavior:
-
-- seeded demo trip and people
-- add items with category, quantity, note, and status
-- pick "You are" and claim or unclaim items
-- sections for `Need`, `Covered`, and `Maybe / extras`
-- quick inline edits for quantity, note, and status
-- lightweight warnings for duplicates and missing basics
-
-See [apps/pack/README.md](/workspace/repos/trip/apps/pack/README.md).
-
-## Notes
-
-- This is intentionally pragmatic. There is no shared package layer yet because there is not enough shared code to justify one.
-- `poll` and `jest` remain planned, but the monorepo layout leaves room for them to join cleanly later.
+- **Event-scoped:** tools are disposable per trip, not permanent workspaces
+- **No accounts:** just open and use
+- **Pragmatic monorepo:** apps share a repo but mature independently
+- **Extract shared code only when duplication is real** — not before

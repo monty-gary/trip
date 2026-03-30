@@ -1,42 +1,28 @@
-const tools = [
-  {
-    name: 'dosh',
-    state: 'live',
-    description: 'Realtime shared expenses with tab-based rooms, balances, and settle-up suggestions.',
-    localUrl: 'http://localhost:5175',
-    backendUrl: 'http://localhost:3000',
-    commands: ['npm run dev:dosh:backend', 'npm run dev:dosh:frontend']
-  },
+const apps = [
   {
     name: 'pack',
-    state: 'mvp',
-    description: 'Plan who brings what, see gaps quickly, and avoid duplicate chaos before the trip.',
-    localUrl: 'http://localhost:5174',
-    backendUrl: 'local state only',
-    commands: ['npm run dev:pack']
+    state: 'live' as const,
+    description: 'Group packing coordination — who brings what, what is still missing.',
+    url: '/trip/',
+  },
+  {
+    name: 'dosh',
+    state: 'live' as const,
+    description: 'Realtime shared expenses with tab-based rooms, balances, and settle-up.',
+    url: null,
   },
   {
     name: 'poll',
-    state: 'planned',
+    state: 'planned' as const,
     description: 'Fast one-tap group decisions for departure times, dinner, and low-stakes indecision.',
-    localUrl: 'not started',
-    backendUrl: 'shared foundation later',
-    commands: []
+    url: null,
   },
   {
     name: 'jest',
-    state: 'planned',
+    state: 'planned' as const,
     description: 'A playful bucket for social trip tools that do not deserve a full product.',
-    localUrl: 'not started',
-    backendUrl: 'shared foundation later',
-    commands: []
+    url: null,
   }
-];
-
-const highlights = [
-  'Event-scoped, disposable tools instead of a heavy workspace.',
-  'Simple monorepo: each app can mature at its own pace.',
-  'Current focus: expenses and packing coordination.'
 ];
 
 function App() {
@@ -44,50 +30,36 @@ function App() {
     <main className="shell">
       <section className="hero">
         <div className="hero-copy">
-          <p className="eyebrow">trip umbrella</p>
-          <h1>Tiny group tools for temporary plans and friend-group logistics.</h1>
+          <p className="eyebrow">trip</p>
+          <h1>Tiny group tools for trips and temporary plans.</h1>
           <p className="lede">
-            This repo now runs as a real monorepo with a launcher, a migrated `dosh`, and a concrete `pack`
-            direction instead of only a concept README.
+            Event-scoped, disposable tools for friend-group logistics. No accounts, no overhead — just open and go.
           </p>
         </div>
         <div className="hero-panel">
-          <h2>Current shape</h2>
+          <h2>What is this?</h2>
           <ul>
-            {highlights.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
+            <li>Small focused apps instead of one heavy product.</li>
+            <li>Each tool solves one group coordination problem.</li>
+            <li>Currently: packing lists and shared expenses.</li>
           </ul>
-          <p className="note">Open this app at `localhost:5173` and jump into the individual tools from here.</p>
         </div>
       </section>
 
       <section className="card-grid">
-        {tools.map((tool) => (
-          <article className="tool-card" key={tool.name}>
+        {apps.map((app) => (
+          <article className="tool-card" key={app.name}>
             <div className="tool-head">
-              <h2>{tool.name}</h2>
-              <span className={`status status-${tool.state}`}>{tool.state}</span>
+              <h2>{app.name}</h2>
+              <span className={`status status-${app.state}`}>{app.state}</span>
             </div>
-            <p>{tool.description}</p>
-            <dl>
-              <div>
-                <dt>Local URL</dt>
-                <dd>{tool.localUrl}</dd>
-              </div>
-              <div>
-                <dt>Backend</dt>
-                <dd>{tool.backendUrl}</dd>
-              </div>
-            </dl>
-            {tool.commands.length > 0 ? (
-              <div className="commands">
-                {tool.commands.map((command) => (
-                  <code key={command}>{command}</code>
-                ))}
-              </div>
+            <p>{app.description}</p>
+            {app.url ? (
+              <a className="app-link" href={app.url}>
+                Open {app.name} →
+              </a>
             ) : (
-              <p className="note">No runnable app yet.</p>
+              <p className="note">{app.state === 'live' ? 'Hosted separately' : 'Coming later'}</p>
             )}
           </article>
         ))}
