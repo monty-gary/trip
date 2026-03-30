@@ -1,0 +1,23 @@
+{
+  "name": "trip",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/umbrella",
+    "apps/pack",
+    "apps/dosh/frontend",
+    "apps/dosh/backend"
+  ],
+  "scripts": {
+    "dev": "npm --workspace apps/umbrella run dev",
+    "dev:umbrella": "npm --workspace apps/umbrella run dev",
+    "dev:pack": "npm --workspace apps/pack run dev",
+    "dev:dosh:frontend": "npm --workspace apps/dosh/frontend run dev",
+    "dev:dosh:backend": "npm --workspace apps/dosh/backend run dev",
+    "build": "npm run build:umbrella && npm run build:pack && npm run build:dosh && npm run check:dosh",
+    "build:umbrella": "npm --workspace apps/umbrella run build",
+    "build:pack": "npm --workspace apps/pack run build",
+    "build:dosh": "npm --workspace apps/dosh/frontend run build",
+    "check:dosh": "npm --workspace apps/dosh/backend run check"
+  }
+}

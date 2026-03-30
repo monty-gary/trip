@@ -1,0 +1,203 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root {
+  font-family: 'Space Grotesk', sans-serif;
+  color: #f6f1e8;
+  background:
+    radial-gradient(circle at top left, rgba(227, 165, 74, 0.28), transparent 28%),
+    radial-gradient(circle at 85% 15%, rgba(95, 168, 151, 0.2), transparent 30%),
+    linear-gradient(160deg, #17130d 0%, #221a12 45%, #121a18 100%);
+  --panel: rgba(24, 20, 15, 0.78);
+  --panel-strong: rgba(34, 28, 21, 0.9);
+  --line: rgba(246, 222, 182, 0.16);
+  --text-dim: #d0c5b7;
+  --mint: #9ad0c2;
+  --gold: #f0bf68;
+  --rose: #f29c7a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.shell {
+  width: min(1180px, calc(100vw - 2rem));
+  margin: 0 auto;
+  padding: 2rem 0 3rem;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1.45fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.hero-copy,
+.hero-panel,
+.tool-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+}
+
+.hero-copy {
+  padding: 2rem;
+}
+
+.hero-panel {
+  padding: 1.5rem;
+  background: var(--panel-strong);
+}
+
+.eyebrow,
+.commands code,
+dd,
+.note {
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.eyebrow {
+  margin: 0 0 0.75rem;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.82rem;
+}
+
+h1,
+h2,
+p,
+ul {
+  margin: 0;
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 4.3rem);
+  line-height: 0.95;
+  max-width: 12ch;
+}
+
+.lede {
+  margin-top: 1rem;
+  color: var(--text-dim);
+  max-width: 52ch;
+  font-size: 1.02rem;
+}
+
+.hero-panel ul {
+  margin-top: 1rem;
+  padding-left: 1.2rem;
+  color: var(--text-dim);
+}
+
+.hero-panel li + li {
+  margin-top: 0.7rem;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.tool-card {
+  padding: 1.3rem;
+  display: grid;
+  gap: 0.9rem;
+}
+
+.tool-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: baseline;
+}
+
+.status {
+  border-radius: 999px;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.status-live {
+  background: rgba(154, 208, 194, 0.16);
+  color: var(--mint);
+}
+
+.status-mvp {
+  background: rgba(240, 191, 104, 0.15);
+  color: var(--gold);
+}
+
+.status-planned {
+  background: rgba(242, 156, 122, 0.14);
+  color: var(--rose);
+}
+
+.tool-card p,
+.tool-card dd,
+.note {
+  color: var(--text-dim);
+}
+
+dl {
+  display: grid;
+  gap: 0.7rem;
+}
+
+dt {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+}
+
+dd {
+  margin: 0.18rem 0 0;
+  word-break: break-word;
+}
+
+.commands {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.commands code {
+  padding: 0.55rem 0.7rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+@media (max-width: 880px) {
+  .hero,
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .shell {
+    width: min(100vw - 1.25rem, 1180px);
+    padding-top: 1rem;
+  }
+
+  .hero-copy,
+  .hero-panel,
+  .tool-card {
+    border-radius: 20px;
+  }
+}
