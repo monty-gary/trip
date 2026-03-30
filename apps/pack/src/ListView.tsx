@@ -37,6 +37,9 @@ export function ListView({
   const [tripNameEdit, setTripNameEdit] = useState(trip.tripName);
   const [addPersonName, setAddPersonName] = useState('');
   const [showAddPerson, setShowAddPerson] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
+
+  const hasItems = trip.items.length > 0;
 
   const sections = useMemo(
     () => ({
@@ -73,6 +76,7 @@ export function ListView({
     setFormQuantity('1');
     setFormNote('');
     setFormState('need');
+    setShowAddForm(false);
   };
 
   const handleAddPersonSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -102,11 +106,33 @@ export function ListView({
     }
   };
 
+  const addItemForm = (
+    <form className="form" onSubmit={handleAddItem}>
+      <input placeholder="Item name" value={formName} onChange={(event) => setFormName(event.target.value)} autoFocus={showAddForm} />
+      <div className="inline">
+        <input placeholder="Category" value={formCategory} onChange={(event) => setFormCategory(event.target.value)} />
+        <input
+          placeholder="Qty"
+          inputMode="numeric"
+          value={formQuantity}
+          onChange={(event) => setFormQuantity(event.target.value.replace(/[^\d]/g, ''))}
+        />
+      </div>
+      <textarea placeholder="Optional note" value={formNote} onChange={(event) => setFormNote(event.target.value)} />
+      <select value={formState} onChange={(event) => setFormState(event.target.value as ItemState)}>
+        <option value="need">Need</option>
+        <option value="covered">Covered</option>
+        <option value="maybe">Maybe / extra</option>
+      </select>
+      <button type="submit">Add to list</button>
+    </form>
+  );
+
   return (
     <main className="shell">
       <section className="hero">
         <div>
-          <p className="eyebrow">pack mvp</p>
+          <p className="eyebrow">pack</p>
           <div className="trip-name-container">
             {isEditingTripName ? (
               <input
@@ -124,7 +150,7 @@ export function ListView({
               </h1>
             )}
           </div>
-          <p className="lede">Answer one question fast: who is bringing what, and what is still missing?</p>
+          <p className="lede">Who is bringing what, and what is still missing?</p>
         </div>
         <div className="hero-panel">
           <div>
@@ -138,7 +164,7 @@ export function ListView({
             </select>
             {!showAddPerson ? (
               <button type="button" className="ghost" onClick={() => setShowAddPerson(true)}>
-                Add person
+                + Add person
               </button>
             ) : (
               <form onSubmit={handleAddPersonSubmit} className="add-person-form">
@@ -153,11 +179,13 @@ export function ListView({
               </form>
             )}
           </div>
-          <div className="stats">
-            <Stat label="Need" value={String(sections.need.length)} />
-            <Stat label="Covered" value={String(sections.covered.length)} />
-            <Stat label="Maybe" value={String(sections.maybe.length)} />
-          </div>
+          {hasItems && (
+            <div className="stats">
+              <Stat label="Need" value={String(sections.need.length)} />
+              <Stat label="Covered" value={String(sections.covered.length)} />
+              <Stat label="Maybe" value={String(sections.maybe.length)} />
+            </div>
+          )}
           <div className="danger-zone">
             <button
               type="button"
@@ -174,61 +202,69 @@ export function ListView({
         </div>
       </section>
 
-      <section className="insights">
-        <article className="panel">
-          <h2>Quick warnings</h2>
-          <ul>
-            {duplicateWarnings.length === 0 && coverageWarnings.length === 0 ? <li>List looks balanced so far.</li> : null}
-            {duplicateWarnings.map((warning) => (
-              <li key={warning}>Duplicate item name: {warning}</li>
-            ))}
-            {coverageWarnings.map((warning) => (
-              <li key={warning}>{warning}</li>
-            ))}
-          </ul>
-        </article>
+      {/* Empty state */}
+      {!hasItems && (
+        <section className="empty-state panel">
+          <h2>No items yet</h2>
+          <p className="empty-state-text">Add the first thing your group needs to bring.</p>
+          {addItemForm}
+        </section>
+      )}
 
-        <article className="panel">
-          <h2>Add item</h2>
-          <form className="form" onSubmit={handleAddItem}>
-            <input placeholder="Item name" value={formName} onChange={(event) => setFormName(event.target.value)} />
-            <div className="inline">
-              <input placeholder="Category" value={formCategory} onChange={(event) => setFormCategory(event.target.value)} />
-              <input
-                placeholder="Qty"
-                inputMode="numeric"
-                value={formQuantity}
-                onChange={(event) => setFormQuantity(event.target.value.replace(/[^\d]/g, ''))}
-              />
-            </div>
-            <textarea placeholder="Optional note" value={formNote} onChange={(event) => setFormNote(event.target.value)} />
-            <select value={formState} onChange={(event) => setFormState(event.target.value as ItemState)}>
-              <option value="need">Need</option>
-              <option value="covered">Covered</option>
-              <option value="maybe">Maybe / extra</option>
-            </select>
-            <button type="submit">Add to list</button>
-          </form>
-        </article>
-      </section>
+      {/* Populated state */}
+      {hasItems && (
+        <>
+          <section className="insights">
+            {(duplicateWarnings.length > 0 || coverageWarnings.length > 0) && (
+              <article className="panel">
+                <h2>Warnings</h2>
+                <ul>
+                  {duplicateWarnings.map((warning) => (
+                    <li key={warning}>Duplicate item name: {warning}</li>
+                  ))}
+                  {coverageWarnings.map((warning) => (
+                    <li key={warning}>{warning}</li>
+                  ))}
+                </ul>
+              </article>
+            )}
 
-      <section className="list-view">
-        <ListSection
-          title="Need"
-          items={sections.need}
-          onSelectItem={onSelectItem}
-        />
-        <ListSection
-          title="Covered"
-          items={sections.covered}
-          onSelectItem={onSelectItem}
-        />
-        <ListSection
-          title="Maybe / extras"
-          items={sections.maybe}
-          onSelectItem={onSelectItem}
-        />
-      </section>
+            <article className="panel">
+              {showAddForm ? (
+                <>
+                  <div className="add-form-header">
+                    <h2>Add item</h2>
+                    <button type="button" className="ghost add-form-close" onClick={() => setShowAddForm(false)}>×</button>
+                  </div>
+                  {addItemForm}
+                </>
+              ) : (
+                <button type="button" className="add-item-toggle" onClick={() => setShowAddForm(true)}>
+                  + Add item
+                </button>
+              )}
+            </article>
+          </section>
+
+          <section className="list-view">
+            <ListSection
+              title="Need"
+              items={sections.need}
+              onSelectItem={onSelectItem}
+            />
+            <ListSection
+              title="Covered"
+              items={sections.covered}
+              onSelectItem={onSelectItem}
+            />
+            <ListSection
+              title="Maybe / extras"
+              items={sections.maybe}
+              onSelectItem={onSelectItem}
+            />
+          </section>
+        </>
+      )}
     </main>
   );
 }
@@ -240,6 +276,8 @@ interface ListSectionProps {
 }
 
 function ListSection({ title, items, onSelectItem }: ListSectionProps) {
+  if (items.length === 0) return null;
+
   return (
     <section className="panel list-section">
       <div className="section-head">
@@ -254,7 +292,6 @@ function ListSection({ title, items, onSelectItem }: ListSectionProps) {
             onSelectItem={onSelectItem}
           />
         ))}
-        {items.length === 0 ? <p className="empty">Nothing here right now.</p> : null}
       </div>
     </section>
   );
@@ -272,12 +309,12 @@ function ListItem({ item, onSelectItem }: ListItemProps) {
 
   return (
     <div className="list-item" onClick={() => onSelectItem(item.id)}>
-      <div className={`status-dot status-dot-${status}`}></div>
+      <div className={`status-dot status-dot-${status}`} />
       <div className="item-content">
-        <div className="item-name">{item.name}</div>
-        <div className="item-category">{item.category}</div>
+        <span className="item-name">{item.name}</span>
+        <span className="item-category">{item.category}</span>
       </div>
-      <div className="claim-fraction">
+      <div className={`claim-fraction ${isFullyClaimed ? 'claim-done' : ''}`}>
         {isFullyClaimed ? '✓' : `${claimedCount}/${item.neededQuantity}`}
       </div>
     </div>
@@ -297,10 +334,8 @@ function deriveState(item: PackItem): ItemState {
   if (item.state === 'maybe') {
     return 'maybe';
   }
-
   if (item.claimedBy.length >= item.neededQuantity || item.state === 'covered') {
     return 'covered';
   }
-
   return 'need';
 }

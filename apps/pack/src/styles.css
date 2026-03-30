@@ -453,6 +453,67 @@ button.ghost {
   min-width: 60px;
 }
 
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 2rem 1.5rem;
+  max-width: 480px;
+  margin: 1.5rem auto;
+}
+
+.empty-state h2 {
+  margin-bottom: 0.5rem;
+}
+
+.empty-state-text {
+  color: var(--ink-soft);
+  margin-bottom: 1.5rem;
+}
+
+.empty-state .form {
+  text-align: left;
+}
+
+/* Add item toggle */
+.add-item-toggle {
+  width: 100%;
+  background: transparent;
+  color: var(--green);
+  border: 1px dashed var(--line);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.add-item-toggle:hover {
+  background: rgba(45, 122, 82, 0.04);
+  border-color: var(--green);
+}
+
+.add-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.add-form-close {
+  width: auto;
+  min-width: 36px;
+  height: 36px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  border-radius: 50%;
+}
+
+/* Claim done checkmark */
+.claim-done {
+  color: var(--green);
+  font-weight: 600;
+}
+
 /* Dense list view */
 .list-view {
   display: grid;
