@@ -1,6 +1,10 @@
 node_modules/
-dist/
 coverage/
-.DS_Store
 
-*.tsbuildinfo
+# Workspace build outputs
+**/dist/
+**/*.tsbuildinfo
+
+# Local OS / tool junk
+.DS_Store
+npm-debug.log*
