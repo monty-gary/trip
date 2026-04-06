@@ -1,5 +1,5 @@
 import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { API_BASE_URL, WS_URL, authenticate, createTab, deleteTab, getSession, listTabs, type AdminTab } from './api';
+import { API_BASE_URL, WS_URL, authenticate, createTab, deleteTab, getSession, listTabs, pingBackend, type AdminTab } from './api';
 import type { ClientMessage, ServerMessage, Snapshot } from './types';
 
 const STORAGE_CLIENT_ID = 'dosh.clientId';
@@ -7,6 +7,7 @@ const STORAGE_AUTH_TOKEN = 'dosh.authToken';
 
 type AuthPhase = 'checking' | 'required' | 'ready';
 type ConnectionState = 'offline' | 'connecting' | 'online';
+type BackendStatus = 'unknown' | 'waking' | 'ready';
 
 interface SplitRow {
   participantName: string;
@@ -41,6 +42,8 @@ function App() {
   const [newTabName, setNewTabName] = useState('');
   const [newTabPassword, setNewTabPassword] = useState('');
   const [newTabCurrency, setNewTabCurrency] = useState('Kč');
+
+  const [backendStatus, setBackendStatus] = useState<BackendStatus>('unknown');
 
   const [isWorking, setIsWorking] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -250,6 +253,56 @@ function App() {
 
   const usedSplitPeople = useMemo(() => new Set(splitRows.map((row) => row.participantName).filter(Boolean)), [splitRows]);
   const canAddSplitRow = people.some((name) => !usedSplitPeople.has(name));
+
+  useEffect(() => {
+    if (authPhase !== 'required') {
+      return;
+    }
+
+    let cancelled = false;
+    let intervalId: number | undefined;
+    let hideTimeoutId: number | undefined;
+
+    const checkOnce = async () => {
+      const ok = await pingBackend();
+      if (cancelled) return;
+      if (ok) {
+        setBackendStatus('ready');
+        if (intervalId !== undefined) {
+          window.clearInterval(intervalId);
+          intervalId = undefined;
+        }
+        hideTimeoutId = window.setTimeout(() => {
+          if (!cancelled) setBackendStatus('unknown');
+        }, 3000);
+      } else {
+        setBackendStatus('waking');
+      }
+    };
+
+    checkOnce().then(() => {
+      if (cancelled) return;
+      intervalId = window.setInterval(async () => {
+        const ok = await pingBackend();
+        if (cancelled) return;
+        if (ok) {
+          setBackendStatus('ready');
+          window.clearInterval(intervalId);
+          intervalId = undefined;
+          hideTimeoutId = window.setTimeout(() => {
+            if (!cancelled) setBackendStatus('unknown');
+          }, 3000);
+        }
+      }, 4000);
+    });
+
+    return () => {
+      cancelled = true;
+      if (intervalId !== undefined) window.clearInterval(intervalId);
+      if (hideTimeoutId !== undefined) window.clearTimeout(hideTimeoutId);
+      setBackendStatus('unknown');
+    };
+  }, [authPhase]);
 
   const onSubmitPassword = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -544,6 +597,12 @@ function App() {
               {authPhase === 'checking' ? 'Checking session…' : isWorking ? 'Checking…' : 'Enter'}
             </button>
           </form>
+
+          {backendStatus === 'waking' ? (
+            <p className="backend-status waking">⏳ Server is waking up — this can take 15–40 s. Hold tight.</p>
+          ) : backendStatus === 'ready' ? (
+            <p className="backend-status ready">✓ Server ready</p>
+          ) : null}
 
           {errorMessage ? <p className="error-text">{errorMessage}</p> : null}
         </section>

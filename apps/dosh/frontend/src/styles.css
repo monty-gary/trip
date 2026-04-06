@@ -432,6 +432,27 @@ strong.pos {
   text-overflow: ellipsis;
 }
 
+.backend-status {
+  margin: 0.5rem 0 0;
+  font-size: 0.78rem;
+  font-family: 'Space Mono', monospace;
+  letter-spacing: 0.02em;
+}
+
+.backend-status.waking {
+  color: var(--accent-warm);
+  animation: pulse-opacity 1.6s ease-in-out infinite;
+}
+
+.backend-status.ready {
+  color: #7ddc6e;
+}
+
+@keyframes pulse-opacity {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
 .modal-backdrop {
   position: fixed;
   inset: 0;
